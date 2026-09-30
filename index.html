@@ -1,0 +1,1029 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Management Dashboard</title>
+    <style>
+        
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    color: #0056b3;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.input-section label {
+    display: inline-block;
+    width: 120px;
+    margin-bottom: 8px;
+}
+
+.input-section input[type="text"],
+.input-section input[type="number"] {
+    width: calc(100% - 130px);
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.input-section button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.add-star-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.input-section button:hover {
+    background-color: #0056b3;
+}
+
+.add-star-btn:hover {
+    background-color: #0056b3;
+}
+
+.export-pdf-btn {
+    background-color: #198754;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.export-pdf-btn:hover {
+    background-color: #146c43;
+}
+
+.table-section {
+    margin-top: 40px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+table th,
+table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#starTable th:last-child,
+#starTable td:last-child {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.table-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    font: inherit;
+}
+
+.observation-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.observation-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 18px;
+}
+
+.observation-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.observation-field label {
+    font-weight: bold;
+}
+
+.observation-field input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font: inherit;
+}
+
+.coordinate-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.coordinate-inputs {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+.coordinate-inputs[hidden] {
+    display: none;
+}
+
+.coordinate-inputs input,
+.coordinate-controls select {
+    min-width: 0;
+}
+
+.coordinate-error {
+    display: none;
+    margin: 5px 0 0;
+    color: #b02a37;
+    font-size: 12px;
+}
+
+.coordinate-invalid .coordinate-inputs input,
+.coordinate-invalid .coordinate-controls select {
+    border-color: #dc3545;
+}
+
+.coordinate-invalid .coordinate-error {
+    display: block;
+}
+
+.chart-legend {
+    max-width: 600px;
+    margin: 10px auto 30px;
+    padding: 10px 14px;
+    border-left: 4px solid #007bff;
+    background-color: #f2f2f2;
+    color: #333;
+    text-align: left;
+}
+
+@media (max-width: 600px) {
+    .observation-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+.connections-editor {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    min-width: 140px;
+}
+
+.connection-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+.remove-connection-btn {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #b02a37;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.connection-select {
+    flex: 1 1 110px;
+    min-width: 90px;
+    font: inherit;
+}
+
+table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.action-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.action-btn:hover {
+    background-color: #c82333;
+}
+
+.action-btn:last-child {
+    margin-right: 0;
+}
+
+.edit-btn {
+    background-color: #ffc107;
+}
+
+.edit-btn:hover {
+    background-color: #e0a800;
+}
+
+.save-btn {
+    background-color: #198754;
+}
+
+.save-btn:hover {
+    background-color: #146c43;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+}
+
+.cancel-btn:hover {
+    background-color: #565e64;
+}
+
+        #skyChart { 
+            display: block; /* Ensures it takes up its own line */
+            width: min(100%, 600px);
+            height: auto;
+            margin: 20px auto; /* Centers the canvas */
+            border: 1px solid #555;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Star Management Dashboard</h1>
+
+        <div class="table-section">
+            <h2>Sky Visualization</h2>
+            <canvas id="skyChart" width="600" height="600"></canvas>
+            <div id="observationLegend" class="chart-legend" aria-live="polite">
+                Observation details will appear here.
+            </div>
+
+            <h2>Star Summary</h2>
+            <table id="starTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Azimuth</th>
+                        <th>Altitude</th>
+                        <th>Constellation</th>
+                        <th>Connections</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Star data will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+
+            <button id="openFormBtn" class="add-star-btn">Add Star</button>
+
+            <section class="observation-section" aria-labelledby="observationHeading">
+                <h2 id="observationHeading">Observation Details</h2>
+                <div class="observation-fields">
+                    <div class="observation-field">
+                        <label for="observerName">Observer name</label>
+                        <input type="text" id="observerName" placeholder="Enter observer name">
+                    </div>
+                    <div class="observation-field">
+                        <label for="observationDate">Observation date</label>
+                        <input type="date" id="observationDate">
+                    </div>
+                    <div class="observation-field">
+                        <label for="observationTime">Observation time</label>
+                        <input type="time" id="observationTime">
+                    </div>
+                    <div class="observation-field">
+                        <label for="locationName">Location name</label>
+                        <input type="text" id="locationName" placeholder="Enter location name">
+                    </div>
+                    <div class="observation-field">
+                        <label for="latitudeFormat">Latitude</label>
+                        <div class="coordinate-controls">
+                            <select id="latitudeFormat">
+                                <option value="decimal">Decimal</option>
+                                <option value="dms">Degrees / Minutes / Seconds</option>
+                            </select>
+                            <select id="latitudeDirection" aria-label="Latitude direction">
+                                <option value="N">North (N)</option>
+                                <option value="S">South (S)</option>
+                            </select>
+                        </div>
+                        <div id="latitudeDecimalInputs" class="coordinate-inputs">
+                            <input type="number" id="latitudeDecimal" min="0" max="90" step="any" placeholder="Degrees">
+                        </div>
+                        <div id="latitudeDmsInputs" class="coordinate-inputs" hidden>
+                            <input type="number" id="latitudeDegrees" min="0" max="90" placeholder="Degrees">
+                            <input type="number" id="latitudeMinutes" min="0" max="59" step="1" placeholder="Minutes">
+                            <input type="number" id="latitudeSeconds" min="0" max="59.999" step="any" placeholder="Seconds">
+                        </div>
+                        <p id="latitudeError" class="coordinate-error">Latitude must be between 0° and 90°.</p>
+                    </div>
+                    <div class="observation-field">
+                        <label for="longitudeFormat">Longitude</label>
+                        <div class="coordinate-controls">
+                            <select id="longitudeFormat">
+                                <option value="decimal">Decimal</option>
+                                <option value="dms">Degrees / Minutes / Seconds</option>
+                            </select>
+                            <select id="longitudeDirection" aria-label="Longitude direction">
+                                <option value="E">East (E)</option>
+                                <option value="W">West (W)</option>
+                            </select>
+                        </div>
+                        <div id="longitudeDecimalInputs" class="coordinate-inputs">
+                            <input type="number" id="longitudeDecimal" min="0" max="180" step="any" placeholder="Degrees">
+                        </div>
+                        <div id="longitudeDmsInputs" class="coordinate-inputs" hidden>
+                            <input type="number" id="longitudeDegrees" min="0" max="180" placeholder="Degrees">
+                            <input type="number" id="longitudeMinutes" min="0" max="59" step="1" placeholder="Minutes">
+                            <input type="number" id="longitudeSeconds" min="0" max="59.999" step="any" placeholder="Seconds">
+                        </div>
+                        <p id="longitudeError" class="coordinate-error">Longitude must be between 0° and 180°.</p>
+                    </div>
+                </div>
+            </section>
+
+            <button id="exportPdfBtn" class="export-pdf-btn">Export Plot, Legend and Table as PDF</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        // Pass initial stars_data from Python to JavaScript
+        const initialStarsData = [];
+        
+document.addEventListener('DOMContentLoaded', () => {
+    const openFormBtn = document.getElementById('openFormBtn');
+    const starTableBody = document.getElementById('starTable').getElementsByTagName('tbody')[0];
+    const observationLegend = document.getElementById('observationLegend');
+    const exportPdfBtn = document.getElementById('exportPdfBtn');
+    const observationFields = [
+        document.getElementById('observerName'),
+        document.getElementById('observationDate'),
+        document.getElementById('observationTime'),
+        document.getElementById('locationName')
+    ];
+    const coordinateControls = [
+        'latitudeFormat', 'latitudeDirection', 'latitudeDecimal', 'latitudeDegrees', 'latitudeMinutes', 'latitudeSeconds',
+        'longitudeFormat', 'longitudeDirection', 'longitudeDecimal', 'longitudeDegrees', 'longitudeMinutes', 'longitudeSeconds'
+    ].map(id => document.getElementById(id));
+    
+    // Canvas setup
+    const skyChartCanvas = document.getElementById('skyChart');
+    const ctx = skyChartCanvas.getContext('2d');
+    const canvasWidth = 600;
+    const canvasHeight = 600;
+    const pixelRatio = Math.min(Math.max(window.devicePixelRatio || 1, 2), 3);
+    skyChartCanvas.width = canvasWidth * pixelRatio;
+    skyChartCanvas.height = canvasHeight * pixelRatio;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    const centerX = canvasWidth / 2;
+    const centerY = canvasHeight / 2;
+    const maxCanvasRadius = Math.min(centerX, centerY) * 0.9; // Max radius for the plot
+
+    let stars = initialStarsData || []; // Initialize with data from Python
+    let editingIndex = null;
+    let isAdding = false;
+
+    function getCoordinateLabel(prefix) {
+        if (!validateCoordinate(prefix)) {
+            return `${prefix[0].toUpperCase() + prefix.slice(1)} invalid`;
+        }
+
+        const format = document.getElementById(`${prefix}Format`).value;
+        const direction = document.getElementById(`${prefix}Direction`).value;
+        if (format === 'decimal') {
+            const decimal = document.getElementById(`${prefix}Decimal`).value;
+            return decimal ? `${decimal}° ${direction}` : `${prefix[0].toUpperCase() + prefix.slice(1)} not set`;
+        }
+
+        const degrees = document.getElementById(`${prefix}Degrees`).value;
+        const minutes = document.getElementById(`${prefix}Minutes`).value;
+        const seconds = document.getElementById(`${prefix}Seconds`).value;
+        return degrees !== '' && minutes !== '' && seconds !== ''
+            ? `${degrees}° ${minutes}' ${seconds}" ${direction}`
+            : `${prefix[0].toUpperCase() + prefix.slice(1)} not set`;
+    }
+
+    function updateCoordinateInputs(prefix) {
+        const isDms = document.getElementById(`${prefix}Format`).value === 'dms';
+        document.getElementById(`${prefix}DecimalInputs`).hidden = isDms;
+        document.getElementById(`${prefix}DmsInputs`).hidden = !isDms;
+        validateCoordinate(prefix);
+        updateObservationLegend();
+    }
+
+    function validateCoordinate(prefix) {
+        const maximum = prefix === 'latitude' ? 90 : 180;
+        const field = document.getElementById(`${prefix}Format`).closest('.observation-field');
+        const error = document.getElementById(`${prefix}Error`);
+        const format = document.getElementById(`${prefix}Format`).value;
+        let isValid = true;
+
+        if (format === 'decimal') {
+            const value = document.getElementById(`${prefix}Decimal`).value;
+            isValid = value === '' || (Number.isFinite(Number(value)) && Number(value) >= 0 && Number(value) <= maximum);
+        } else {
+            const degrees = document.getElementById(`${prefix}Degrees`).value;
+            const minutes = document.getElementById(`${prefix}Minutes`).value;
+            const seconds = document.getElementById(`${prefix}Seconds`).value;
+            const hasAnyValue = degrees !== '' || minutes !== '' || seconds !== '';
+            const degreesValue = Number(degrees);
+            const minutesValue = Number(minutes);
+            const secondsValue = Number(seconds);
+            isValid = !hasAnyValue || (degrees !== '' && minutes !== '' && seconds !== ''
+                && Number.isFinite(degreesValue) && degreesValue >= 0 && degreesValue <= maximum
+                && Number.isFinite(minutesValue) && minutesValue >= 0 && minutesValue < 60
+                && Number.isFinite(secondsValue) && secondsValue >= 0 && secondsValue < 60
+                && (degreesValue < maximum || (minutesValue === 0 && secondsValue === 0)));
+        }
+
+        field.classList.toggle('coordinate-invalid', !isValid);
+        error.textContent = isValid
+            ? ''
+            : `Enter a value from 0° to ${maximum}°${format === 'dms' ? ' (minutes and seconds must be 0-59)' : ''}.`;
+        return isValid;
+    }
+
+    function updateObservationLegend() {
+        const observer = observationFields[0].value.trim() || 'Unknown observer';
+        const date = observationFields[1].value || 'Date not set';
+        const time = observationFields[2].value || 'Time not set';
+        const location = observationFields[3].value.trim() || 'Location not set';
+        const latitude = getCoordinateLabel('latitude');
+        const longitude = getCoordinateLabel('longitude');
+
+        observationLegend.textContent = `Observer: ${observer} | Date: ${date} | Time: ${time} | Location: ${location} | Coordinates: ${latitude}, ${longitude}`;
+    }
+
+    observationFields.forEach(field => field.addEventListener('input', updateObservationLegend));
+    coordinateControls.forEach(field => field.addEventListener('input', () => {
+        validateCoordinate(field.id.startsWith('latitude') ? 'latitude' : 'longitude');
+        updateObservationLegend();
+    }));
+    ['latitude', 'longitude'].forEach(prefix => {
+        document.getElementById(`${prefix}Format`).addEventListener('change', () => updateCoordinateInputs(prefix));
+        document.getElementById(`${prefix}Direction`).addEventListener('change', updateObservationLegend);
+    });
+
+    exportPdfBtn.addEventListener('click', () => {
+        if (editingIndex !== null || isAdding) {
+            alert('Save or cancel the current star edit before exporting.');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const documentPdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const pageWidth = documentPdf.internal.pageSize.getWidth();
+        const pageHeight = documentPdf.internal.pageSize.getHeight();
+        const margin = 15;
+
+        documentPdf.setFontSize(18);
+        documentPdf.text('Sky Observation', margin, margin);
+
+        const plotImage = skyChartCanvas.toDataURL('image/png');
+        const plotSize = Math.min(pageWidth - margin * 2, pageHeight - 75);
+        documentPdf.addImage(plotImage, 'PNG', (pageWidth - plotSize) / 2, margin + 8, plotSize, plotSize);
+
+        documentPdf.setFontSize(10);
+        const legendLines = documentPdf.splitTextToSize(observationLegend.textContent, pageWidth - margin * 2);
+        documentPdf.text(legendLines, margin, margin + 18 + plotSize);
+
+        documentPdf.addPage();
+        documentPdf.setFontSize(18);
+        documentPdf.text('Star Summary', margin, margin);
+        documentPdf.autoTable({
+            startY: margin + 8,
+            margin: { left: margin, right: margin },
+            head: [['Name', 'Azimuth', 'Altitude', 'Constellation', 'Connections']],
+            body: stars.map(star => [
+                star.name,
+                star.azimuth,
+                star.altitude,
+                star.constellation,
+                star.connections.join(', ')
+            ]),
+            theme: 'grid',
+            styles: { fontSize: 9, cellPadding: 3 },
+            headStyles: { fillColor: [0, 86, 179] },
+            didDrawPage: data => {
+                documentPdf.setFontSize(9);
+                documentPdf.text(`Star Summary - Page ${data.pageNumber}`, margin, pageHeight - 8);
+            }
+        });
+
+        documentPdf.save('sky-observation.pdf');
+    });
+
+    // Function to convert (azimuth, altitude) to canvas (x, y) coordinates
+    function getCanvasCoords(az, alt) {
+        // Convert azimuth to radians (0-360 to 0-2PI, North=0, clockwise)
+        const theta = (az * Math.PI / 180); // Azimuth is already clockwise from North
+        // Convert altitude to a radial distance (0-90 alt to 90-0 r)
+        // r=0 (zenith) at center, r=90 (horizon) at edge
+        const r_polar = 90 - alt;
+        // Scale polar r to canvas radius
+        const canvas_r = (r_polar / 90) * maxCanvasRadius;
+
+        // Convert polar to Cartesian coordinates for canvas
+        // x = center_x + r * sin(theta)
+        // y = center_y - r * cos(theta) (y-axis is inverted on canvas)
+        const x = centerX + canvas_r * Math.sin(theta);
+        const y = centerY - canvas_r * Math.cos(theta);
+        return { x, y };
+    }
+
+    // Function to draw the sky chart on canvas
+    function drawSkyChart() {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight); // Clear canvas
+        ctx.fillStyle = '#1a0933'; // Set background color to match Python plot
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        // Draw grid lines (simplified for brevity, can be enhanced)
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 1;
+        // Draw circles for altitude
+        for (let r_val = 30; r_val <= 90; r_val += 30) {
+            const canvas_r = (r_val / 90) * maxCanvasRadius;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, canvas_r, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+
+        // Draw radial lines for azimuth
+        for (let az_val = 0; az_val < 360; az_val += 45) {
+            const { x, y } = getCanvasCoords(az_val, 0); // Plot at horizon
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+
+        // Add radial compass ticks around the horizon every 10 degrees
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.lineWidth = 1;
+        for (let az_val = 0; az_val < 360; az_val += 10) {
+            const angle = az_val * Math.PI / 180;
+            const tickLength = az_val % 45 === 0 ? 9 : 5;
+            const innerRadius = maxCanvasRadius - 1;
+            const outerRadius = maxCanvasRadius + tickLength;
+            const innerX = centerX + innerRadius * Math.sin(angle);
+            const innerY = centerY - innerRadius * Math.cos(angle);
+            const outerX = centerX + outerRadius * Math.sin(angle);
+            const outerY = centerY - outerRadius * Math.cos(angle);
+            ctx.beginPath();
+            ctx.moveTo(innerX, innerY);
+            ctx.lineTo(outerX, outerY);
+            ctx.stroke();
+        }
+
+        // Draw compass and altitude labels
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.font = 'bold 13px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const compassPoints = [
+            { azimuth: 0, label: 'N' },
+            { azimuth: 45, label: 'NE' },
+            { azimuth: 90, label: 'E' },
+            { azimuth: 135, label: 'SE' },
+            { azimuth: 180, label: 'S' },
+            { azimuth: 225, label: 'SW' },
+            { azimuth: 270, label: 'W' },
+            { azimuth: 315, label: 'NW' }
+        ];
+        const compassRadius = maxCanvasRadius + 18;
+        compassPoints.forEach(point => {
+            const angle = point.azimuth * Math.PI / 180;
+            const labelX = centerX + compassRadius * Math.sin(angle);
+            const labelY = centerY - compassRadius * Math.cos(angle);
+            ctx.fillText(point.label, labelX, labelY);
+        });
+
+        ctx.textAlign = 'left';
+        ctx.font = '12px Arial';
+        for (let r_val = 30; r_val <= 90; r_val += 30) {
+            const canvas_r = (r_val / 90) * maxCanvasRadius;
+            const labelX = centerX + 8;
+            const labelY = centerY - canvas_r - 6;
+            ctx.fillText(`${90 - r_val}°`, labelX, labelY);
+            if (r_val === 90) {
+                ctx.font = '10px Arial';
+                ctx.fillText('HORIZON', labelX + 20, labelY);
+                ctx.font = '12px Arial';
+            }
+        }
+
+        ctx.textAlign = 'left';
+        ctx.fillText('90°', centerX + 8, centerY - 8);
+        ctx.font = '10px Arial';
+        ctx.fillText('ZENITH', centerX + 8, centerY + 8);
+
+        // Draw constellation lines first (similar to Python logic)
+        const drawnConnections = new Set();
+        ctx.strokeStyle = '#add8e6'; // Light blue lines
+        ctx.lineWidth = 1.5;
+        stars.forEach(star => {
+            const { x: startX, y: startY } = getCanvasCoords(star.azimuth, star.altitude);
+            star.connections.forEach(targetName => {
+                const targetStar = stars.find(s => s.name === targetName);
+                if (targetStar) {
+                    const { x: endX, y: endY } = getCanvasCoords(targetStar.azimuth, targetStar.altitude);
+                    const connectionId = [star.name, targetName].sort().join('-');
+                    if (!drawnConnections.has(connectionId)) {
+                        ctx.beginPath();
+                        ctx.moveTo(startX, startY);
+                        ctx.lineTo(endX, endY);
+                        ctx.stroke();
+                        drawnConnections.add(connectionId);
+                    }
+                }
+            });
+        });
+
+        // Draw stars (yellow 'X' markers)
+        ctx.strokeStyle = 'yellow';
+        ctx.lineWidth = 1.5;
+        stars.forEach(star => {
+            const { x, y } = getCanvasCoords(star.azimuth, star.altitude);
+            // Draw a cross (X) marker
+            const markerSize = 8;
+            ctx.beginPath();
+            ctx.moveTo(x - markerSize / 2, y - markerSize / 2);
+            ctx.lineTo(x + markerSize / 2, y + markerSize / 2);
+            ctx.moveTo(x + markerSize / 2, y - markerSize / 2);
+            ctx.lineTo(x - markerSize / 2, y + markerSize / 2);
+            ctx.stroke();
+        });
+
+        // Draw constellation names (simplified, without complex barycenter logic for now)
+        const constellationsMap = {};
+        stars.forEach(star => {
+            if (star.constellation) {
+                if (!constellationsMap[star.constellation]) {
+                    constellationsMap[star.constellation] = { sumX: 0, sumY: 0, count: 0, stars: [] };
+                }
+                const { x, y } = getCanvasCoords(star.azimuth, star.altitude);
+                constellationsMap[star.constellation].sumX += x;
+                constellationsMap[star.constellation].sumY += y;
+                constellationsMap[star.constellation].count++;
+                constellationsMap[star.constellation].stars.push(star);
+            }
+        });
+
+        ctx.fillStyle = 'white'; // White text for constellation names
+        ctx.font = 'bold 12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        for (const constName in constellationsMap) {
+            const constData = constellationsMap[constName];
+            // Simple centroid for now
+            const avgX = constData.sumX / constData.count;
+            const avgY = constData.sumY / constData.count;
+
+            // Find outermost star for label placement to push it slightly outward
+            let maxRadialDistance = 0;
+            constData.stars.forEach(star => {
+                const { x, y } = getCanvasCoords(star.azimuth, star.altitude);
+                const dx = x - centerX;
+                const dy = y - centerY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist > maxRadialDistance) {
+                    maxRadialDistance = dist;
+                }
+            });
+
+            // Place label slightly beyond the outermost star of the constellation
+            const currentAngle = Math.atan2(avgY - centerY, avgX - centerX);
+            const labelRadius = Math.min(maxRadialDistance + 20, maxCanvasRadius - 10); // Clamp to prevent going off canvas
+            const labelX = centerX + labelRadius * Math.cos(currentAngle);
+            const labelY = centerY + labelRadius * Math.sin(currentAngle);
+
+            ctx.fillText(constName.toUpperCase(), labelX, labelY);
+        }
+    }
+
+    function compareStars(firstStar, secondStar) {
+        return firstStar.constellation.localeCompare(secondStar.constellation) || firstStar.name.localeCompare(secondStar.name);
+    }
+
+    // Function to render the table
+    function renderTable() {
+        stars.sort(compareStars);
+        starTableBody.innerHTML = ''; // Clear existing rows
+        stars.forEach((star, index) => {
+            const row = starTableBody.insertRow();
+            if (editingIndex === index) {
+                renderEditRow(row, star, index);
+                return;
+            }
+
+            row.insertCell().textContent = star.name;
+            row.insertCell().textContent = star.azimuth;
+            row.insertCell().textContent = star.altitude;
+            row.insertCell().textContent = star.constellation;
+            row.insertCell().textContent = star.connections.join(', ');
+
+            const actionsCell = row.insertCell();
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit';
+            editBtn.classList.add('action-btn', 'edit-btn');
+            editBtn.addEventListener('click', () => editStar(index));
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.classList.add('action-btn');
+            deleteBtn.addEventListener('click', () => deleteStar(index));
+
+            actionsCell.appendChild(editBtn);
+            actionsCell.appendChild(deleteBtn);
+        });
+
+        if (isAdding) {
+            renderEditRow(starTableBody.insertRow(), {
+                name: '',
+                azimuth: '',
+                altitude: '',
+                constellation: '',
+                connections: []
+            }, null);
+        }
+
+        drawSkyChart(); // Redraw canvas after table update
+    }
+
+    function renderEditRow(row, star, index) {
+        const nameInput = createTableInput('text', star.name);
+        const azimuthInput = createTableInput('number', star.azimuth, 0, 360);
+        const altitudeInput = createTableInput('number', star.altitude, 0, 90);
+        const constellationInput = createTableInput('text', star.constellation);
+        const connectionsEditor = createConnectionsEditor(star.connections, () => constellationInput.value, () => nameInput.value.trim());
+        constellationInput.addEventListener('input', connectionsEditor.refreshOptions);
+
+        [nameInput, azimuthInput, altitudeInput, constellationInput, connectionsEditor].forEach(input => {
+            const cell = row.insertCell();
+            cell.appendChild(input);
+        });
+
+        const actionsCell = row.insertCell();
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = 'Save';
+        saveBtn.classList.add('action-btn', 'save-btn');
+        saveBtn.addEventListener('click', () => saveStar(index, {
+            name: nameInput.value.trim(),
+            azimuth: parseInt(azimuthInput.value, 10),
+            altitude: parseInt(altitudeInput.value, 10),
+            constellation: constellationInput.value.trim(),
+            connections: connectionsEditor.getConnections()
+        }));
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.classList.add('action-btn', 'cancel-btn');
+        cancelBtn.addEventListener('click', cancelEditing);
+
+        actionsCell.appendChild(saveBtn);
+        actionsCell.appendChild(cancelBtn);
+    }
+
+    function createConnectionsEditor(connections, getConstellation, getStarName) {
+        const editor = document.createElement('div');
+        editor.className = 'connections-editor';
+        const connectionNames = [...connections];
+
+        function renderConnections() {
+            editor.innerHTML = '';
+            connectionNames.forEach(connectionName => {
+                const chip = document.createElement('span');
+                chip.className = 'connection-chip';
+                chip.appendChild(document.createTextNode(connectionName));
+
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.className = 'remove-connection-btn';
+                removeButton.textContent = '×';
+                removeButton.setAttribute('aria-label', `Remove connection to ${connectionName}`);
+                removeButton.addEventListener('click', () => {
+                    connectionNames.splice(connectionNames.indexOf(connectionName), 1);
+                    renderConnections();
+                });
+
+                chip.appendChild(removeButton);
+                editor.appendChild(chip);
+            });
+
+            const connectionSelect = document.createElement('select');
+            connectionSelect.className = 'connection-select';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = 'Add star';
+            placeholder.disabled = true;
+            placeholder.selected = true;
+            connectionSelect.appendChild(placeholder);
+
+            stars.filter(candidate => candidate.constellation === getConstellation()
+                && candidate.name !== getStarName()
+                && !connectionNames.includes(candidate.name))
+                .sort(compareStars)
+                .forEach(candidate => {
+                    const option = document.createElement('option');
+                    option.value = candidate.name;
+                    option.textContent = candidate.name;
+                    connectionSelect.appendChild(option);
+                });
+
+            connectionSelect.disabled = connectionSelect.options.length === 1;
+            connectionSelect.addEventListener('change', () => {
+                if (connectionSelect.value) {
+                    connectionNames.push(connectionSelect.value);
+                    renderConnections();
+                }
+            });
+
+            editor.appendChild(connectionSelect);
+        }
+
+        editor.getConnections = () => [...connectionNames];
+        editor.refreshOptions = renderConnections;
+        renderConnections();
+        return editor;
+    }
+
+    function createTableInput(type, value, min, max) {
+        const input = document.createElement('input');
+        input.type = type;
+        input.value = value;
+        input.className = 'table-input';
+        if (min !== undefined) input.min = min;
+        if (max !== undefined) input.max = max;
+        return input;
+    }
+
+    function synchronizeConnections() {
+        stars.forEach(star => {
+            star.connections.forEach(targetName => {
+                const targetStar = stars.find(candidate => candidate.name === targetName);
+                if (targetStar && !targetStar.connections.includes(star.name)) {
+                    targetStar.connections.push(star.name);
+                }
+            });
+        });
+    }
+
+    function saveStar(index, star) {
+        if (!star.name || isNaN(star.azimuth) || isNaN(star.altitude) || star.azimuth < 0 || star.azimuth > 360 || star.altitude < 0 || star.altitude > 90) {
+            alert('Please fill in Name, Azimuth (0-360), and Altitude (0-90) correctly.');
+            return;
+        }
+
+        const normalizedName = star.name.toLowerCase();
+        const duplicateName = stars.some((candidate, starIndex) => starIndex !== index
+            && candidate.constellation === star.constellation
+            && candidate.name.toLowerCase() === normalizedName);
+        if (duplicateName) {
+            alert('Star names must be unique within the same constellation.');
+            return;
+        }
+
+        if (star.connections.includes(star.name)) {
+            alert('A star cannot be connected to itself.');
+            return;
+        }
+
+        const otherStars = stars.filter((_, starIndex) => starIndex !== index);
+        const incompatibleConnection = star.connections.find(targetName => {
+            const targetStar = otherStars.find(candidate => candidate.name === targetName);
+            return targetStar && targetStar.constellation !== star.constellation;
+        });
+        if (incompatibleConnection) {
+            alert('Stars can only connect to stars in the same constellation.');
+            return;
+        }
+
+        const previousStar = index === null ? null : stars[index];
+        if (previousStar) {
+            previousStar.connections.forEach(targetName => {
+                if (!star.connections.includes(targetName)) {
+                    const targetStar = stars.find(candidate => candidate.name === targetName);
+                    if (targetStar) {
+                        targetStar.connections = targetStar.connections.filter(connection => connection !== previousStar.name);
+                    }
+                }
+            });
+        }
+
+        if (index === null) {
+            stars.push(star);
+        } else {
+            stars[index] = star;
+        }
+
+        synchronizeConnections();
+        editingIndex = null;
+        isAdding = false;
+        renderTable();
+    }
+
+    function cancelEditing() {
+        editingIndex = null;
+        isAdding = false;
+        renderTable();
+    }
+
+    openFormBtn.addEventListener('click', () => {
+        if (editingIndex !== null || isAdding) return;
+        isAdding = true;
+        renderTable();
+        starTableBody.lastElementChild.querySelector('input').focus();
+    });
+
+    function editStar(index) {
+        if (editingIndex !== null || isAdding) return;
+        editingIndex = index;
+        renderTable();
+        starTableBody.rows[index].querySelector('input').focus();
+    }
+
+    // Function to delete a star
+    function deleteStar(index) {
+        if (confirm(`Are you sure you want to delete ${stars[index].name}?`)) {
+            stars.splice(index, 1);
+            renderTable();
+        }
+    }
+
+    // Initial render of table and canvas
+    renderTable();
+    drawSkyChart();
+    updateObservationLegend();
+});
+
+    </script>
+</body>
+</html>
