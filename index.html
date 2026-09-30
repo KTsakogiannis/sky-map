@@ -100,8 +100,15 @@ h1, h2 {
     margin-top: 40px;
 }
 
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 table {
     width: 100%;
+    min-width: 760px;
     border-collapse: collapse;
     margin-top: 15px;
 }
@@ -207,6 +214,14 @@ table td {
 }
 
 @media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 18px 12px;
+    }
+
     .observation-fields {
         grid-template-columns: 1fr;
     }
@@ -321,21 +336,23 @@ table tr:nth-child(even) {
             </div>
 
             <h2>Star Summary</h2>
-            <table id="starTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Azimuth</th>
-                        <th>Altitude</th>
-                        <th>Constellation</th>
-                        <th>Connections</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Star data will be inserted here by JavaScript -->
-                </tbody>
-            </table>
+            <div class="table-scroll">
+                <table id="starTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Azimuth</th>
+                            <th>Altitude</th>
+                            <th>Constellation</th>
+                            <th>Connections</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Star data will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
 
             <button id="openFormBtn" class="add-star-btn">Add Star</button>
 
