@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star Management Dashboard</title>
+    <title>DIY Night Sky Map</title>
     <style>
         
 body {
@@ -326,16 +326,15 @@ table tr:nth-child(even) {
 </head>
 <body>
     <div class="container">
-        <h1>Star Management Dashboard</h1>
+        <h1>DIY Night Sky Map</h1>
 
         <div class="table-section">
-            <h2>Sky Visualization</h2>
             <canvas id="skyChart" width="600" height="600"></canvas>
             <div id="observationLegend" class="chart-legend" aria-live="polite">
                 Observation details will appear here.
             </div>
 
-            <h2>Star Summary</h2>
+            <h2>Star Measurements</h2>
             <div class="table-scroll">
                 <table id="starTable">
                     <thead>
@@ -422,7 +421,7 @@ table tr:nth-child(even) {
                 </div>
             </section>
 
-            <button id="exportPdfBtn" class="export-pdf-btn">Export Plot, Legend and Table as PDF</button>
+            <button id="exportPdfBtn" class="export-pdf-btn">Export Sky Map and Measurements as PDF</button>
         </div>
     </div>
 
